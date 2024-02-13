@@ -182,7 +182,7 @@ const PackingSlipPdf = ({
                                 <View style={styles.vs}></View>
                                 <Text style={styles.headerLabel}>Client :&nbsp;<Text style={styles.headerTxt}>{client}</Text></Text>
                                 <Text style={styles.headerLabel}>Client code :&nbsp;<Text style={styles.headerTxt}>{clientID}</Text></Text>
-                                <Text style={styles.headerLabel}>Client visibility :&nbsp;<Text style={styles.headerTxt}>{clientVisibility}</Text></Text>
+                                <Text style={styles.headerLabel}>Classification client :&nbsp;<Text style={styles.headerTxt}>{clientVisibility}</Text></Text>
                             </View>
                             <View style={styles.flexCol}>
                                 <Text style={styles.headerLabel}>Shipping method :&nbsp;<Text style={styles.headerTxt}>{shippingMethod}</Text></Text>
