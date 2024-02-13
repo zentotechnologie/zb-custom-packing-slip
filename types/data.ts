@@ -20,6 +20,7 @@ export interface TableItemOrder {
     order: any;
     customerName: string;
     customerCode: number|string;
+    date_created: string;
 }
 
 export interface ListItem extends FormData {

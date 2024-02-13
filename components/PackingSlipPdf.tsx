@@ -1,5 +1,5 @@
 import { Document, Page, Text, Link, Image, View, StyleSheet, Font } from '@react-pdf/renderer';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 export type PackingSlipPdfProps = {
     order: any;
@@ -35,9 +35,9 @@ const PackingSlipPdf = ({
     const options = { day: '2-digit', month: '2-digit', year: 'numeric' } as const;
     const formattedDate = inputDate.toLocaleDateString('en-GB', options);
     const orderDate = formattedDate
-    const sortedProductsArray = products && products.sort(function (a: { data: { sku_id: number; }; }, b: { data: { sku_id: number; }; }) {
-        return a.data.sku_id - b.data.sku_id;
-    });
+    const sortedProductsArray = useMemo(() => products ? products.sort(function (a: { data: { bin_picking_number: number; }; }, b: { data: { bin_picking_number: number; }; }) {
+        return a.data.bin_picking_number - b.data.bin_picking_number;
+    }) : [], [products]);
     const totalQty = products && products.map((product: any) => product.qty).reduce((accumulator, currentValue) => {
         return accumulator + currentValue
     }, 0);
@@ -46,6 +46,7 @@ const PackingSlipPdf = ({
 
     const client = currentOrder && currentOrder.customer && currentOrder.customer.name;
     const clientID = currentOrder && currentOrder.customer && currentOrder.customer.code;
+    const clientVisibility = currentOrder && currentOrder.customer && currentOrder.customer.visibility;
 
     const styles = StyleSheet.create({
         page: {
@@ -181,6 +182,7 @@ const PackingSlipPdf = ({
                                 <View style={styles.vs}></View>
                                 <Text style={styles.headerLabel}>Client :&nbsp;<Text style={styles.headerTxt}>{client}</Text></Text>
                                 <Text style={styles.headerLabel}>Client code :&nbsp;<Text style={styles.headerTxt}>{clientID}</Text></Text>
+                                <Text style={styles.headerLabel}>Client visibility :&nbsp;<Text style={styles.headerTxt}>{clientVisibility}</Text></Text>
                             </View>
                             <View style={styles.flexCol}>
                                 <Text style={styles.headerLabel}>Shipping method :&nbsp;<Text style={styles.headerTxt}>{shippingMethod}</Text></Text>
@@ -226,7 +228,7 @@ const PackingSlipPdf = ({
                             <Text style={styles.headerLabel}></Text>
                         </View>
                     </View>
-                    {products.map((product, idx) => (
+                    {sortedProductsArray.map((product, idx) => (
                         <View style={ms(styles.flexRow, styles.bb)} wrap={false}>
                             <View style={ms(styles.flexCol, styles.w20, styles.fICenter, styles.fJCenter, styles.bl, styles.cell)}>
                                 <Image

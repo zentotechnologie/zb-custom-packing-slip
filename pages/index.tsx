@@ -61,6 +61,13 @@ const Orders = () => {
         <Small>{status}</Small>
     );
 
+    const renderCreationDate = (order: any): ReactElement => {
+        const trimmed_date = order.date_created && order.date_created.substring(0, order.date_created.lastIndexOf(" "));
+        return (
+            <Small>{trimmed_date}</Small>
+        );
+    };
+
     const renderCustomerName = (name: string): ReactElement => (
         <Small>{name}</Small>
     );
@@ -95,15 +102,16 @@ const Orders = () => {
                     columns={[
                         { header: 'Order ID', hash: 'id', render: ({ id }) => renderId(id), isSortable: true },
                         { header: 'Status', hash: 'status', render: ({ status }) => renderStatus(status), isSortable: false },
+                        { header: 'Creation date', hash: 'date', render: ({order}) => renderCreationDate(order), isSortable: false },
                         { header: 'Customer Name', hash: 'customerName', render: ({ customerName }) => renderCustomerName(customerName), isSortable: false },
                         { header: 'Customer Code', hash: 'customerCode', render: ({ customerCode }) => renderCustomerCode(customerCode), isSortable: false },
                         { header: 'Packing Slip', hash: 'psmp', render: (order) => renderPackingSlip(order), isSortable: false },
                     ]}
                     items={tableItems}
-                    itemName="Orders"
+                    itemName="Commandes a préparer"
                     pagination={{
                         currentPage,
-                        totalItems: meta?.pagination?.total,
+                        totalItems: meta?.pagination?.total || "",
                         onPageChange: setCurrentPage,
                         itemsPerPageOptions,
                         onItemsPerPageChange,

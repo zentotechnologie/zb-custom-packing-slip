@@ -104,17 +104,19 @@ export default async function list(req: NextApiRequest, res: NextApiResponse) {
             const customerID = order.customer_id;
             let rawCustomerGroupResponse = null;
             try {
-                const rawCustomerResponse = await bigcommerceV3.get(`/customers?id:in=${customerID}`);
+                const rawCustomerResponse = await bigcommerceV3.get(`/customers?id:in=${customerID}&include=formfields`);
                 if (rawCustomerResponse && rawCustomerResponse.data && rawCustomerResponse.data[0]) {
                     const customer = rawCustomerResponse.data[0];
                     const customerGroupId = customer.customer_group_id;
                     const name = customer.company || `${customer.first_name} ${customer.last_name}`;
+                    const visibilityField = customer.form_fields.find((ff: {name: string, value?: any}) => ff.name === "VISIBILITE CATALOGUE");
+                    const visibility = visibilityField ? visibilityField.value : "N/A";
                     if (!customerGroupId) {
-                        rawCustomerGroupResponse = {code: "N/A", name};
+                        rawCustomerGroupResponse = {code: "N/A", name, visibility};
                     } else {
                         rawCustomerGroupResponse = await bigcommerce.get(`/customer_groups/${customerGroupId}`);
                         const code = rawCustomerGroupResponse.name;
-                        rawCustomerGroupResponse = {code, name};
+                        rawCustomerGroupResponse = {code, name, visibility};
                     }
                 }
             } catch (error) {
