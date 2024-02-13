@@ -35,8 +35,8 @@ const PackingSlipPdf = ({
     const options = { day: '2-digit', month: '2-digit', year: 'numeric' } as const;
     const formattedDate = inputDate.toLocaleDateString('en-GB', options);
     const orderDate = formattedDate
-    const sortedProductsArray = useMemo(() => products ? products.sort(function (a: { data: { bin_picking_number: number; }; }, b: { data: { bin_picking_number: number; }; }) {
-        return a.data.bin_picking_number - b.data.bin_picking_number;
+    const sortedProductsArray = useMemo(() => products ? products.sort(function (a: { data: { bin_picking_number: string; }; }, b: { data: { bin_picking_number: string; }; }) {
+        return a.data.bin_picking_number && a.data.bin_picking_number.localeCompare(b.data.bin_picking_number);
     }) : [], [products]);
     const totalQty = products && products.map((product: any) => product.qty).reduce((accumulator, currentValue) => {
         return accumulator + currentValue
