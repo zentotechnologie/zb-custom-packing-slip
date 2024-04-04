@@ -38,7 +38,17 @@ export default async function list(req: NextApiRequest, res: NextApiResponse) {
             // console.log('***********************');
             let rawProducts = [];
             try {
-                rawProducts = await bigcommerce.get(order.products.resource);
+                let page = 0;
+                const limit = 50;
+                let condition = true;
+                do {
+                    page += 1;
+                    const thisRawProducts = await bigcommerce.get(`${order.products.resource}?page=${page}&limit=${limit}`);
+                    console.log(`list on /orders/${id}/products for page ${page} : got ${thisRawProducts.length} products`);
+                    rawProducts.push(...thisRawProducts);
+                    condition = thisRawProducts.length === limit;
+                } while (condition)
+                console.log(`list on /orders/${id}/products : got ${rawProducts.length} products for all pages`);
             } catch (error) {
                 console.log(`list on /orders/${id}/products : error`, order.products.resource, error);
             }
@@ -47,7 +57,7 @@ export default async function list(req: NextApiRequest, res: NextApiResponse) {
             // console.log('***********************');
             let products = [];
             try {
-                products = await Promise.all(rawProducts.map(async (product: any) => {
+                products = (await Promise.all(rawProducts.map(async (product: any) => {
                 
                     if (product.variant_id == 121) {
                         // console.log('***********************');
@@ -81,7 +91,7 @@ export default async function list(req: NextApiRequest, res: NextApiResponse) {
                             return undefined;
                         }
                     }
-                }))
+                }))).filter(Boolean)
             } catch (error) {
                 console.log(`list on /orders/${id}/products : error`, error);
             }
