@@ -231,10 +231,10 @@ const PackingSlipPdf = ({
                     {sortedProductsArray.map((product, idx) => (
                         <View style={ms(styles.flexRow, styles.bb)} wrap={false}>
                             <View style={ms(styles.flexCol, styles.w20, styles.fICenter, styles.fJCenter, styles.bl, styles.cell)}>
-                                <Image
+                                {product.data.image_url && <Image
                                     style={styles.image}
                                     src={product.data.image_url}
-                                />
+                                />}
                             </View>
                             <View style={ms(styles.flexCol, styles.w30, styles.fICenter, styles.fJCenter, styles.bl, styles.cell)}>
                                 <Text style={styles.headerTxt}>{product.data.sku}</Text>
